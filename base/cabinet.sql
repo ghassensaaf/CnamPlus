@@ -12,7 +12,6 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -36,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `consultation` (
   `date_jour` varchar(100) NOT NULL,
   `date_premier` date NOT NULL,
   PRIMARY KEY (`n_decision`,`indice`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `consultation`
@@ -90,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `decision` (
   `pu` float NOT NULL,
   `bord` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`n_assure`,`n_decision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `decision`
@@ -122,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `facture` (
   `total_ttc` float NOT NULL,
   `ttc_lettre` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `facture`
@@ -142,7 +141,7 @@ INSERT INTO `facture` (`id`, `annee`, `n_decision`, `n_fac`, `datee`, `date_prem
 DROP TABLE IF EXISTS `jour_non_aut`;
 CREATE TABLE IF NOT EXISTS `jour_non_aut` (
   `jour` date NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `jour_non_aut`
@@ -180,7 +179,7 @@ DROP TABLE IF EXISTS `kine`;
 CREATE TABLE IF NOT EXISTS `kine` (
   `code` varchar(20) NOT NULL,
   `cin` int(11) NOT NULL,
-  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8_general_ci NOT NULL,
   `nom` varchar(20) NOT NULL,
   `prenom` varchar(20) NOT NULL,
   `uname` varchar(20) NOT NULL,
@@ -195,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `kine` (
   `RIB` varchar(255) NOT NULL,
   PRIMARY KEY (`code`),
   UNIQUE KEY `cin` (`cin`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `kine`
@@ -222,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `patient` (
   `diagnostique` varchar(255) NOT NULL,
   `tel` varchar(255) NOT NULL,
   PRIMARY KEY (`n_assure`,`cin_kine`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `patient`
