@@ -1,22 +1,9 @@
 <?php include "inc/fonctions.php";
-    $use=new fonctions();
-    $fac=$use->getFact($_GET['n_decision']);
-    $pat=$use->getPatient($_GET['n_assure']);
-    $dec=$use->getDec($_GET['n_assure'],$_GET['n_decision']);
+$use=new fonctions();
+$bord=$use->getBord($_GET["n_bord"]);
+$detB=$use->nbF($_GET["n_bord"]);
+session_start();
 
-
-    foreach ($fac as $f)
-    {
-        foreach ($pat as $p)
-        {
-            foreach ($dec as $d)
-            {
-                $conD=$use->getCon($_GET['n_decision'],'1');
-                $conF=$use->getCon($_GET['n_decision'],$d["nbr_s"]);
-                foreach ($conD as $cd)
-                {
-                    foreach ($conF as $cf)
-                    {
 ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -62,69 +49,107 @@
     <div style="border: 1px solid black;padding: 2%; border-radius: 25px;" class="col-4 offset-1">
         <h5 class="text-center"> Derouiche Mouna</h5>
         <h5 class="text-center text-uppercase"> Kinesitherapeute</h5>
-        <hr>
         <h6 class="text-center "> Av. de la republique, Imm. Les Arcades</h6>
         <table width="100%" class="text-center">
             <tr>
                 <td width="50%;"><h7>Tel/GSM</h7></td>
                 <td><h7>25 456 832</h7></td>
             </tr>
-
+            <tr>
+                <td width="50%;"><h7>Mat. Fiscal</h7></td>
+                <td><h7>1597611/S</h7></td>
+            </tr>
+            <tr>
+                <td width="50%;"><h7>RIB</h7></td>
+                <td><h7>08909010032001730537</h7></td>
+            </tr>
         </table>
     </div>
     <div class="col-2 mt-4"><img src="images/icon/kine.jpg" width="100%" alt=""> </div>
     <div style="border: 1px solid black; border-radius: 25px;" class="col-4">
-        <table width="100%" style="margin-top:10% "  >
+        <table width="100%"  style="margin-top:20% "  >
             <tr>
-                <td><h6>Patient</h6></td>
-                <td><h6><?php echo $p["nom"].' '.$p["prenom"];?></h6></td>
+                <td><h6>Num° Employeur</h6></td>
+                <td><h6>0/0</h6></td>
             </tr>
             <tr>
-                <td><h6>Qualité</h6></td>
-                <td><h6><?php echo $p["qualite"];?></h6></td>
+                <td><h6>Code Cnam</h6></td>
+                <td><h6>1/27348/91</h6></td>
             </tr>
-            <tr>
-                <td><h6>N° Assuré :</h6></td>
-                <td><h6><?php echo $_GET["n_assure"]?></h6></td>
-            </tr>
-            <tr>
-                <td><h6>Prise en Charge N° :</h6></td>
-                <td><h6><?php echo $_GET["n_decision"]?></h6></td>
-            </tr>
-
         </table>
     </div>
 </div>
 <div class="mb-5" style="margin-top: 5%">
-    <h3 class="text-center">MEMOIRE DE SIGNATURE</h3>
+    <h3 class="text-center text-uppercase">Bordereau de trasmission N° <?php echo $_GET["n_bord"];?></h3>
 </div>
-<div class="mb-5 ml-5 mr-5 text-center" style="margin-top: 10%">
-    <table border="1px" width="100%" style="font-size: 22px;">
+<div class="mb-5 ml-5 mr-5" style="margin-top: 10%">
+    <table border="1" class="text-center"  width="100%" style="font-size: 18px;">
         <thead>
-            <tr>
-                <th width="15%">Séance N°</th>
-                <th>Date</th>
-                <th>Signature</th>
-            </tr>
+            <th></th>
+            <th>Nom Prenom Patient</th>
+            <th>N° l'Assuré</th>
+            <th>N°Décision</th>
+            <th>N°Facture</th>
+            <th>TTC</th>
         </thead>
         <tbody>
         <?php
-        for($i=1;$i<($d["nbr_s"]+1);$i++)
+        $x=1;
+        foreach ($bord as $b)
         {
-            $seance=$use->getCon($_GET['n_decision'],$i);
-            foreach ($seance as $sean)
-            {?>
-        <tr>
-            <td><?php echo $i?></td>
-            <td><?php echo $sean["date_jour"]?></td>
-            <td></td>
-        </tr>
-            <?php }}?>
+            foreach ($detB as $db)
+            {
+                $fac=$use->getFact($db['n_decision']);
+                $dec=$use->getDec(null,$db['n_decision']);
+                    foreach ($fac as $f)
+                    {
+                        foreach ($dec as $d)
+                        {
+                            $pat=$use->getPatient($d["n_assure"]);
+                            foreach ($pat as $pp)
+                            {
+                                echo '
+                                <tr>
+                                    <td>'.$x.'</td>
+                                    <td class="text-capitalize">'.$pp["nom"].' '.$pp["prenom"].'</td>
+                                    <td>'.$pp["n_assure"].'</td>
+                                    <td>'.$db["n_decision"].'</td>
+                                    <td>'.$f["n_fac"].'</td>
+                                    <td>'.$f["total_ttc"].' DT</td>
+                                </tr>
+                                ';
+                            }}}$x++;}}
+        ?>
         </tbody>
     </table>
 </div>
+<?php $tot_ttc=$b["total_ttc"];$mnt_tva=($tot_ttc*6.542/100); ?>
+<div class="row">
+    <div class="mb-5 mr-5 col-3 offset-8" style="margin-top: 10%">
+        <table border="1" class="text-center"  width="100%" style="font-size: 18px;">
+            <tr>
+                <td>Total HT</td>
+                <td><?php echo number_format($tot_ttc-$mnt_tva, 3, '.', ' ').' DT' ?></td>
+            </tr>
+            <tr>
+                <td>Montant TVA</td>
+                <td><?php echo number_format($mnt_tva, 3, '.', ' ').' DT' ?></td>
+            </tr>
+            <tr>
+                <td>Total TTC</td>
+                <td><?php echo number_format($tot_ttc, 3, '.', ' ').' DT' ?></td>
+            </tr>
+        </table>
+    </div>
 
-<?php }}}}}?>
+</div>
+
+<div class="row">
+    <div class="col-8 offset-4">
+        <h5>La somme est arreté a <?php echo $b["ttc_lettre"]?> dinars <?php $c=floor($tot_ttc); if ($c!=$tot_ttc){echo " et 500 millimes";}?></h5>
+    </div>
+</div>
+<?php ?>
 <script src="../vendor/jquery-3.2.1.min.js"></script>
 <!-- Bootstrap JS-->
 <script src="../vendor/bootstrap-4.1/popper.min.js"></script>

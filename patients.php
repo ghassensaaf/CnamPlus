@@ -21,7 +21,7 @@ $pat=$f->getPatient();
                                         <div class="modal-header text-center">
                                             <h4 class="modal-title w-100 font-weight-bold">Nouveau Patient</h4>
                                         </div>
-                                        <form id="addP" action="inc/forms.php" onsubmit="return submit_form()" method="post">
+                                        <form id="addP" action="inc/forms.php" onsubmit="return submit_form(this)" method="post">
 
                                             <div class="modal-body mx-3">
                                                 <h5 class="text-center mb-3" >Assuré</h5>
@@ -37,13 +37,13 @@ $pat=$f->getPatient();
                                                         <div class="col-5 offset-1">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="nom_ass" class="control-label mb-1">Nom Assuré</label></div>
-                                                                <input id="nom_ass" name="nom_ass" type="text" onkeyup="validate(this)" class="form-control" value="" placeholder="" required>
+                                                                <input id="nom_ass" name="nom_ass" type="text" onkeyup="validate(this);document.getElementById('nom').value=this.value;" class="form-control" value="" placeholder="" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-5">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="pre_ass" class="control-label mb-1">Prènom Assuré</label></div>
-                                                                <input id="pre_ass" name="pre_ass" type="text" class="form-control" value="" placeholder="" onkeyup="validate(this)" required>
+                                                                <input id="pre_ass" name="pre_ass" type="text" class="form-control" value="" placeholder="" onkeyup="validate(this);document.getElementById('pre').value=this.value;" required>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -55,6 +55,8 @@ $pat=$f->getPatient();
                                                                     <option value="Assure lui meme">Assuré lui même</option>
                                                                     <option value="Conjoint">Conjoint</option>
                                                                     <option value="Enfant">Enfant</option>
+                                                                    <option value="Mere">Mere</option>
+                                                                    <option value="Pere">Pere</option>
                                                                 </select>
 
                                                             </div>
@@ -166,13 +168,13 @@ $pat=$f->getPatient();
                                                                             <div class="col-5 offset-1">
                                                                                 <div class="form-group">
                                                                                     <div style="text-align: center;"><label for="nom_ass" class="control-label mb-1">Nom Assuré</label></div>
-                                                                                    <input id="nom_ass" name="nom_ass" type="text" class="form-control" value="'.$p["nom_ass"].'" placeholder="">
+                                                                                    <input id="nom_ass" name="nom_ass" type="text" class="form-control" value="'.$p["nom_ass"].'" onkeyup="validate(this)" placeholder="">
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-5">
                                                                                 <div class="form-group">
                                                                                     <div style="text-align: center;"><label for="pre_ass" class="control-label mb-1">Prènom Assuré</label></div>
-                                                                                    <input id="pre_ass" name="pre_ass" type="text" class="form-control" value="'.$p["pre_ass"].'" placeholder="">
+                                                                                    <input id="pre_ass" name="pre_ass" type="text" class="form-control" value="'.$p["pre_ass"].'" onkeyup="validate(this)" placeholder="">
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -184,6 +186,8 @@ $pat=$f->getPatient();
                                                                                         <option ';if($p["qualite"]=="Assure lui meme"){echo " selected ";} echo' value="Assure lui meme">Assuré lui même</option>
                                                                                         <option ';if($p["qualite"]=="Conjoint"){echo " selected ";} echo' value="Conjoint">Conjoint</option>
                                                                                         <option ';if($p["qualite"]=="Enfant"){echo " selected ";} echo' value="Enfant">Enfant</option>
+                                                                                        <option ';if($p["qualite"]=="Mere"){echo " selected ";} echo' value="Mere">Mere</option>
+                                                                                        <option ';if($p["qualite"]=="Pere"){echo " selected ";} echo' value="Pere">Pere</option>
                                                                                     </select>
                     
                                                                                 </div>
@@ -197,26 +201,26 @@ $pat=$f->getPatient();
                                                                             <div class="col-5 offset-1">
                                                                                 <div class="form-group">
                                                                                     <div style="text-align: center;"><label for="nom" class="control-label mb-1">Nom</label></div>
-                                                                                    <input id="nom" name="nom" type="text" class="form-control" value="'.$p["nom"].'" placeholder="">
+                                                                                    <input id="nom" name="nom" type="text" class="form-control" value="'.$p["nom"].'" onkeyup="validate(this)" placeholder="">
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-5">
                                                                                 <div class="form-group">
                                                                                     <div style="text-align: center;"><label for="pre_ass" class="control-label mb-1">Prènom</label></div>
-                                                                                    <input id="pre" name="pre" type="text" class="form-control" value="'.$p["prenom"].'" placeholder="">
+                                                                                    <input id="pre" name="pre" type="text" class="form-control" value="'.$p["prenom"].'" onkeyup="validate(this)" placeholder="">
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                         <div class="row mb-1">
                                                                             <div class="form-group col-4 offset-4">
                                                                                 <div style="text-align: center;"><label for="tel" class="control-label mb-1">Numèro Telephone</label></div>
-                                                                                <input id="tel" name="tel" type="text" class="form-control text-center" value="'.$p["tel"].'" placeholder="XX XXX XXX" maxlength="11">
+                                                                                <input id="tel" name="tel" type="text" class="form-control text-center" value="'.$p["tel"].'" onkeyup="validate(this)" placeholder="XX XXX XXX" maxlength="11">
                                                                             </div>
                                                                         </div>
                                                                         <div class="row mb-1">
                                                                             <div class="form-group col-8 offset-2">
                                                                                 <div style="text-align: center;"><label for="diag" class="control-label mb-1">Diagnostique</label></div>
-                                                                                <input id="diag" name="diag" type="text" class="form-control text-center" value="'.$p["diagnostique"].'" placeholder="" maxlength="">
+                                                                                <input id="diag" name="diag" type="text" class="form-control text-center" value="'.$p["diagnostique"].'" onkeyup="validate(this)" placeholder="" maxlength="">
                                                                             </div>
                                                                         </div>
                                                                     </div>

@@ -1,5 +1,4 @@
-<?php
-?>
+
 <!-- COPYRIGHT-->
 <section class="p-t-60 p-b-20">
     <div class="container">
@@ -80,6 +79,7 @@
 
 <!-- Main JS-->
 <script src="js/main.js"></script>
+
 <script>
     function checkAv(str) {
         if(str.value.length< 7) {
@@ -112,6 +112,37 @@
         }
 
     }
+    function checkAvD(str) {
+        if(str.value.length< 9) {
+            document.getElementById("num_dec_r").innerHTML = "";
+            str.classList.add("is-invalid");
+            str.classList.remove("is-valid");
+            return;
+        }
+        else {
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("num_dec_r").innerHTML = this.responseText;
+                    if(document.querySelector('#num_dec_r>span').classList.contains("text-danger") )
+                    {
+                        str.classList.add("is-invalid");
+                        str.classList.remove("is-valid");
+                    }
+                    else
+                    {
+                        str.classList.add("is-valid");
+                        str.classList.remove("is-invalid");
+                    }
+                }
+            };
+            xmlhttp.open("GET","inc/forms.php?form=checkDec&q="+str.value,true);
+            xmlhttp.send();
+
+        }
+
+    }
     function validate(element) {
         if(element.value.length>3)
         {
@@ -124,10 +155,10 @@
             element.classList.remove("is-valid");
         }
     }
-    function submit_form()
+    function submit_form(x)
     {
-        let form = document.getElementById("addP");
-        let inputs= form.elements;
+
+        let inputs= x.elements;
         for (let i=0;i<inputs.length;i++)
         {
             if (inputs[i].classList.contains("is-invalid"))
@@ -181,52 +212,106 @@
         });
     });
 </script>
+
 <script type="text/javascript">
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+    function checkDate(day) {
+        <?php
+        $js_array = json_encode($jourf);
+        echo "var javascript_array = ". $js_array . ";\n";
+        ?>
+        for(let count=0;count<javascript_array.length;count++)
+        {
+            if(javascript_array[count].jour==day)
+            {
+                return true;
+            }
+        }
+
+    }
     function nextDay3(h,x)
     {
         if(x==0)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (1 + 7 - j.getDay()) % 7);
-            return j;
+            if(checkDate(formatDate(j))==true)
+            {return nextDay3(j,1)}
+            else
+            {return j}
         }
         else if(x==1)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (3 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay3(j,3)}
+            else
+            {return j}
         }
         else if(x==2)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (4 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay3(j,4)}
+            else
+            {return j}
         }
         else if(x==3)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (5 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay3(j,5)}
+            else
+            {return j}
         }
         else if(x==4)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (6 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay3(j,6)}
+            else
+            {return j}
         }
         else if(x==5)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (1 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay3(j,1)}
+            else
+            {return j}
         }
         else if(x==6)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (2 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay3(j,2)}
+            else
+            {return j}
         }
-
     }
     function nextDay2(h,x)
     {
@@ -272,7 +357,6 @@
             j.setDate(j.getDate() + (3 + 7 - j.getDay()) % 7);
             return j;
         }
-
     }
     function nextDay1(h,x)
     {
@@ -318,19 +402,18 @@
             j.setDate(j.getDate() + 7);
             return j;
         }
-
     }
-    function handler(e)
+    function handler(e,x='')
     {
-        var d=document.getElementById('nbs').value;
+        var d=document.getElementById('nbs'+x).value;
         d= parseInt(d, 10);
         d=d+1;
         for(let i=1;i<d;i++)
         {
             if(i==1)
             {
-                let z='jr'+i;
-                let w=new Date(document.getElementById('date_deb').value);
+                let z='j'+x+'r'+i;
+                let w=new Date(document.getElementById('date_deb'+x).value);
                 let month= ''+(w.getMonth()+1);if(month.length<2){month = '0' + month;}
                 let day= ''+(w.getDate());if(day.length<2){day = '0' + day;}
                 let jour=day+'/'+month+'/'+w.getFullYear();
@@ -338,8 +421,8 @@
             }
             else
             {
-                let z='jr'+i;
-                let zz='jr'+(i-1);
+                let z='j'+x+'r'+i;
+                let zz='j'+x+'r'+(i-1);
                 let yesterday=document.getElementById(zz).value.substr(6, 4)+'-'+document.getElementById(zz).value.substr(3, 2)+'-'+document.getElementById(zz).value.substr(0, 2);
                 console.log(yesterday);
                 let yest=new Date(yesterday).getDay();
@@ -352,12 +435,10 @@
                 let jour=day+'/'+month+'/'+w.getFullYear();
                 document.getElementById(z).value=jour;
             }
-
-
         }
         for(let i=d;i<37;i++)
         {
-            let z='jr'+i;
+            let z='j'+x+'r'+i;
             document.getElementById(z).value='';
         }
     }

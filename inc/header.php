@@ -12,6 +12,12 @@ if (isset($_SESSION["cin"])) {
 
 $f=new fonctions();
 $u=$f->getKine($_SESSION['cin']);
+$jf=$f->getjrf();
+$jourf=array();
+foreach ($jf as $j)
+{
+    array_push($jourf,$j);
+}
 foreach ($u as $t)
 {
 ?>
@@ -79,7 +85,7 @@ foreach ($u as $t)
                                 <span class="bot-line"></span>Patients</a>
                         </li>
                         <li>
-                            <a href="table.html">
+                            <a href="bord.php">
                                 <i class="fas fa-copy"></i>
                                 <span class="bot-line"></span>Bordereaux</a>
                         </li>
@@ -155,7 +161,7 @@ foreach ($u as $t)
                             <i class="fas fa-users"></i>Patients</a>
                     </li>
                     <li>
-                        <a href="table.html">
+                        <a href="bord.php">
                             <i class="fas fa-copy"></i>Bordereaux</a>
                     </li>
                 </ul>

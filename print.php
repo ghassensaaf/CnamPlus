@@ -73,14 +73,14 @@
                 <td><h7>1597611/S</h7></td>
             </tr>
             <tr>
-                <td width="50%;"><h7>RIB</h7></td>
-                <td><h7>08909010032001730537</h7></td>
+                    <td width="50%;"><h7>RIB</h7></td>
+                    <td><h7>08909010032001730537</h7></td>
             </tr>
         </table>
     </div>
     <div class="col-2 mt-4"><img src="images/icon/kine.jpg" width="100%" alt=""> </div>
     <div style="border: 1px solid black; border-radius: 25px;" class="col-4">
-        <table width="100%" class="text-center "style="margin-top:20% "  >
+        <table width="100%"  style="margin-top:20% "  >
             <tr>
                 <td><h6>Num° Employeur</h6></td>
                 <td><h6>0/0</h6></td>
@@ -102,6 +102,10 @@
 <div class="mb-5 ml-5" style="margin-top: 10%">
     <table width="100%" style="font-size: 22px;">
         <tr>
+            <td width="30%">Date :</td>
+            <td><?php echo $cf["date_jour"]?> </td>
+        </tr>
+        <tr>
             <td width="30%">Patient :</td>
             <td><?php echo $p["nom"].' '.$p["prenom"];?> </td>
         </tr>
@@ -118,8 +122,16 @@
             <td><?php echo $_GET["n_decision"]?> </td>
         </tr>
         <tr>
+            <td width="30%">Date Debut :</td>
+            <td><?php echo $cd["date_jour"]?> </td>
+        </tr>
+        <tr>
+            <td width="30%">Date fin :</td>
+            <td><?php echo $cf["date_jour"]?> </td>
+        </tr>
+        <tr>
             <td width="30%">Nombre de Séances :</td>
-            <td><?php echo $d["nbr_s"].' Séances du '.$cd["date_jour"].' au '.$cf["date_jour"]?> </td>
+            <td><?php echo $d["nbr_s"].' Séances.'?> </td>
         </tr>
     </table>
 </div>
@@ -147,7 +159,8 @@
                 <td><strong><?php echo $f["total_ttc"].' TND'?></strong></td>
             </tr>
         </table>
-        <h4 class="text-center">La Somme est arrêtée à :<?php if ($d["nbr_s"]%2==0){echo ' '.$f["ttc_lettre"].' Dinars.';}else{echo ' '.$f["ttc_lettre"].'Dinars et Cinq-Cent Millimes. ';}?></h4>
+        <h4 class=" ">La Somme est arrêtée à :<?php if ($d["nbr_s"]%2==0){echo ' '.$f["ttc_lettre"].' Dinars.';}else{echo ' '.$f["ttc_lettre"].'Dinars et Cinq-Cent Millimes. ';}?></h4>
+        <h3 class="mt-5 text-right"><strong>Signature et caché</strong></h3>
     </div>
 
 </div>

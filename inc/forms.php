@@ -74,11 +74,15 @@ if(isset($_POST["form"]))
 
         if(isset($_POST['num_dec'])and isset($_POST["num_ass"]) and isset($_POST["nbs"]) and isset($_POST["nb_p_s"]) and isset($_POST["date_deb"])and isset($_POST["pu"]))
         {
-            $use->addDec($_POST["num_ass"],$_POST['num_dec'],$_POST["nbs"],$_POST["nb_p_s"],$_POST["date_deb"],$_POST["pu"]);
+            $use->addDec($_POST["num_ass"],$_POST['num_dec'],$_POST["nbs"],$_POST["nb_p_s"],$_POST["date_deb"],$_POST["pu"],$_POST["jr".$_POST["nbs"]]);
+            echo $_POST["jr".$_POST["nbs"]];
             $y=date("Y");
             $s=$use->nbrF($y);
             $s=$s+1;
-            $s='0'.$s;
+            if(strlen($s)==1)
+            {
+                $s='0'.$s;
+            }
             $nfac=$s.'/'.$y;
             $tt_ttc=$_POST["nbs"]*11.5;
             $tt_ht=$tt_ttc-($tt_ttc*0.07);
@@ -86,7 +90,7 @@ if(isset($_POST["form"]))
             $ch=new ChiffreEnLettre();
             $ttt=(int)$tt_ttc;
             $mt_let=$ch->Conversion($ttt);
-            $use->addFac($_POST['num_dec'],$nfac,$_POST["date_deb"],'8odwa',$_POST["pu"],$tt_ht,7,$tt_ttc,$mt_let,$mtva);
+            $use->addFac($_POST['num_dec'],$nfac,$_POST["date_deb"],$_POST["jr".$_POST["nbs"]],$_POST["pu"],$tt_ht,7,$tt_ttc,$mt_let,$mtva);
             for($i=1;$i<($_POST["nbs"]+1);$i++)
             {
                 $use->addCon($_POST['num_dec'],$i,'nhar mel nharat',$_POST["jr".$i],$_POST["date_deb"]);
@@ -114,7 +118,7 @@ if(isset($_POST["form"]))
             $ttt=(int)$tt_ttc;
             $mt_let=$ch->Conversion($ttt);
             $use->editFac($_POST["id"],$_POST["date_deb"],'8odwa',$_POST["pu"],$tt_ht,7,$tt_ttc,$mt_let,$mtva);
-
+            echo $_POST["jr7"];
             for($i=1;$i<($_POST["nbs"]+1);$i++)
             {
                 $use->editCon($_POST['num_dec'],$i,'nhar mel nharat',$_POST["jr".$i],$_POST["date_deb"]);
@@ -130,6 +134,73 @@ if(isset($_POST["form"]))
             header('location:../pec.php?n_ass='.$_POST["num_ass"]);
         }
     }
+    if($_POST["form"]=="creatBord")
+    {
+        if(!empty($_POST["n_dec"]))
+        {
+            $nbrFac=count($_POST["n_dec"]);
+            $total=0;
+            $year=date('Y');
+            $s=$use->nbrB($year);
+            $s=$s+1;
+            $s='0'.$s;
+            if(strlen($s)==2)
+            {
+                $s='0'.$s;
+            }
+            $nBor=$s.'/'.$year;
+            foreach ($_POST["n_dec"] as $numD)
+            {
+                $fac=$use->getFact($numD);
+                foreach ($fac as $f)
+                {
+                    $total=$total+$f["total_ttc"];
+                }
+                $use->addDetBor($numD,$nBor);
+                $use->edit_dec_bord($numD);
+            }
+            $ttt=(int)$total;
+            $use->premierligne($s,$year,$nbrFac,$total);
+            foreach ($_POST["n_dec"] as $numD)
+            {
+                $fac=$use->getFact($numD);
+                foreach ($fac as $f)
+                {
+                    $dec=$use->getDec(null,$f["n_decision"]);
+                    foreach ($dec as $dd)
+                    {
+                        $con=$use->getCon($f["n_decision"],$dd["nbr_s"]);
+                        foreach ($con as $cc)
+                        {
+                            $use->lignefact($year,$s,$f["n_fac"],$f["n_decision"],$dd["n_assure"],$dd["nb_s_sem"],$dd["nbr_s"],$dd["dat_deb"],$cc["date_jour"],$f["total_ttc"],$f["total_ht"],$f["tva"],$f["mnt_tva"],$f["datee"]);
+                        }
+
+                    }
+                }
+            }
+
+            $ch=new ChiffreEnLettre();
+            $ttletre=$ch->Conversion($ttt);
+            $use->creatBord($nBor,$total,$ttletre);
+        }
+        header('location:../bord.php');
+    }
+    if($_POST["form"]=="deleteB")
+    {
+        if (isset($_POST['num_bor']))
+        {
+            $use->deletBord($_POST['num_bor']);
+            header('location:../bord.php');
+        }
+    }
+    if($_POST["form"]=="jrf")
+    {
+        if (isset($_POST['dated'])and isset($_POST['datef']))
+        {
+            $use->addjrf($_POST['dated'],$_POST['datef']);
+            header('location:../index.php');
+        }
+    }
 }
 else
 {
@@ -138,6 +209,21 @@ else
         if(isset($_GET["q"]))
         {
             $d=$use->check_num_ass_avalibility($_GET["q"]);
+            if($d>0)
+            {
+                echo '<span class="text-danger"> <i class="zmdi zmdi-close-circle"></i> Num. assuré existe deja! <a href="pec.php?n_ass='.$_GET["q"].'">aller a sa page </a></span>';
+            }
+            else
+            {
+                echo "<span class='text-success'> <i class=\"zmdi zmdi-badge-check\"></i> Num. assuré valable</span>";
+            }
+        }
+    }
+    if($_GET["form"]=="checkDec")
+    {
+        if(isset($_GET["q"]))
+        {
+            $d=$use->check_num_dec_avalibility($_GET["q"]);
             if($d>0)
             {
                 echo '<span class="text-danger"> <i class="zmdi zmdi-close-circle"></i> Num. assuré existe deja! <a href="pec.php?n_ass='.$_GET["q"].'">aller a sa page </a></span>';
