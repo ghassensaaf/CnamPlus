@@ -74,7 +74,10 @@ if(isset($_POST["form"]))
 
         if(isset($_POST['num_dec'])and isset($_POST["num_ass"]) and isset($_POST["nbs"]) and isset($_POST["nb_p_s"]) and isset($_POST["date_deb"])and isset($_POST["pu"]))
         {
-            $use->addDec($_POST["num_ass"],$_POST['num_dec'],$_POST["nbs"],$_POST["nb_p_s"],$_POST["date_deb"],$_POST["pu"],$_POST["jr".$_POST["nbs"]]);
+
+
+            $date = str_replace('/', '-',  $_POST["jr".$_POST["nbs"]]);
+            $use->addDec($_POST["num_ass"],$_POST['num_dec'],$_POST["nbs"],$_POST["nb_p_s"],$_POST["date_deb"],$_POST["pu"],date('Y-m-d', strtotime($date)));
             echo $_POST["jr".$_POST["nbs"]];
             $y=date("Y");
             $s=$use->nbrF($y);

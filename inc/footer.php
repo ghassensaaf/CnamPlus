@@ -169,6 +169,19 @@
     }
 </script>
 <script type="text/javascript">
+    $('input:checkbox').change(function ()
+    {
+
+        var total = 0;
+        $('input:checkbox:checked').each(function(){
+            total += parseFloat($(this).attr('data-valuetwo'));
+        });
+
+        $("#total").html(total);
+
+    });
+</script>
+<script type="text/javascript">
     $(function() {
         // for now, there is something adding a click handler to 'a'
         var tues = moment().day(2).hour(19);
@@ -247,10 +260,7 @@
         {
             j= new Date(h);
             j.setDate(j.getDate() + (1 + 7 - j.getDay()) % 7);
-            if(checkDate(formatDate(j))==true)
-            {return nextDay3(j,1)}
-            else
-            {return j}
+            return j;
         }
         else if(x==1)
         {

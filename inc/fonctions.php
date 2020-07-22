@@ -181,7 +181,7 @@ class fonctions
         }
         else
         {
-            $sql="select * from cabinet.decision where bord='0' order by dat_deb ASC";
+            $sql="select * from cabinet.decision where bord='0' order by date_fin ASC";
         }
         $db = config::getConnexion();
         try

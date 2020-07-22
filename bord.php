@@ -21,6 +21,7 @@ $dec=$f->getDec();
                                         <div class="modal-header text-center">
                                             <h4 class="modal-title w-100 font-weight-bold">Nouveau Bordereau</h4>
                                         </div>
+                                        <h4 class="mt-5 ml-5">Total <span id="total" style="color: #7aca2a;"> 0 </span> DT</h4>
                                         <form id="addP" action="inc/forms.php" onsubmit="return submit_form()" method="post">
                                             <div class="container mt-5">
                                                 <div class="row">
@@ -41,7 +42,7 @@ $dec=$f->getDec();
                                                                 echo '
                                                                 <div class="col-4 text-center">
                                                                         <div class="card-wrapper mb-5">
-                                                                            <input name ="n_dec[]" class="c-card" type="checkbox" id="'.$x.'" value="'.$d["n_decision"].'" hidden>
+                                                                            <input name ="n_dec[]" class="c-card" type="checkbox" id="'.$x.'" value="'.$d["n_decision"].'" data-valuetwo="'.$fa["total_ttc"].'" hidden>
                                                                             <div class="card-content">
                                                                                 <div class="card-state-icon"></div>
                                                                                 <label for="'.$x.'">
