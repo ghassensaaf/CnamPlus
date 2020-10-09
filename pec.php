@@ -1,7 +1,8 @@
 <?php
 include 'inc/header.php';
+
 $pat=$f->getPatient($_GET["n_ass"]);
-$dec=$f->getDec($_GET["n_ass"]);
+$dec=$f->getDec($_GET["n_ass"],null);
 
 foreach ($pat as $p){
 ?>
@@ -12,8 +13,8 @@ foreach ($pat as $p){
                 <div class="row">
                     <div class="col-10 offset-1">
                         <div class="au-card ">
-                            <a href="patients.php"><i style="background: #7aca2a; border-radius: 10px; padding: 10px; color: white" class="zmdi zmdi-arrow-left"></i></a> Retour vers patients
-                            <h3 class="text-center text-capitalize text-success mb-5"><?php echo $p["nom"].' '.$p["prenom"] ?></h3>
+                            <a href="patients.php"><i style="background: #febe01; border-radius: 10px; padding: 10px; color: white" class="zmdi zmdi-arrow-left"></i></a> Retour vers patients
+                            <h3 style="color: #febe01" class="text-center text-capitalize  mb-5"><?php echo $p["nom"].' '.$p["prenom"] ?></h3>
                             <div class="row m-b-10">
                                 <div class="col-4">
                                     <p class="text-center"><strong class="text-secondary">Numèro Assuré :</strong><p class="text-center" ><?php echo '  '.$p["n_assure"] ?></p></p>
@@ -57,7 +58,7 @@ foreach ($pat as $p){
                                                         <div class="col-4 ">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="nbs" class="control-label mb-1">Nb seance</label></div>
-                                                                <input id="nbs" name="nbs" type="text" class="form-control text-center" minlength="1"  value="" placeholder="" required>
+                                                                <input id="nbs" name="nbs" type="number" class="form-control text-center" max="36" minlength="1"  value="" placeholder="" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-4">
@@ -73,7 +74,8 @@ foreach ($pat as $p){
                                                         <div class="col-4 ">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="date_deb" class="control-label mb-1">date debut</label></div>
-                                                                <input  id="date_deb" name="date_deb" type="date" class="form-control text-center" value="" placeholder="" onchange="handler(event);" required>
+                                                                <input  id="date_deb" name="date_deb" type="date" class="form-control text-center" value="" onkeyup="" placeholder="" onchange="handler(event); validateDate(this);" required>
+                                                                <span class="text-danger" id="datespan"> </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -81,7 +83,7 @@ foreach ($pat as $p){
                                                         <div class="col-4 offset-4">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="pu" class="control-label mb-1">Prix Unitaire</label></div>
-                                                                <input  id="pu" name="pu" type="text" class="form-control text-center" value="11.5" placeholder="">
+                                                                <input  id="pu" name="pu" type="text" class="form-control text-center" value="7.2" placeholder="">
 
                                                             </div>
                                                         </div>
@@ -142,7 +144,8 @@ foreach ($pat as $p){
                                                 </div>
                                             </div>
                                             <div class="modal-footer d-flex justify-content-center">
-                                                <input type="hidden" name="num_ass" value="<?php echo $_GET["n_ass"]?>">
+                                                <input type="hidden" name="num_ass" value="<?php echo $p["n_assure"]?>">
+                                                <input type="hidden" name="id" value="<?php echo $_GET["n_ass"]?>">
                                                 <input type="hidden" name="form" value="addPEC">
                                                 <input type="button" class="btn btn-outline-danger" data-dismiss="modal" aria-label="Close"  value="Cancel">
                                                 <input type="submit" class="btn btn-outline-success" value="Ajouter">
@@ -178,7 +181,7 @@ foreach ($pat as $p){
                                 {   $facture=$f->getFact($d["n_decision"]);
                                     foreach ($facture as $fac){ $id=$fac["id"];}
                                     echo'
-                                <tr';if ($d["bord"]=="0"){echo ' style="background: rgb(255,255,255);background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(122,202,42,0.3) 10%, rgba(122,202,42,0.3) 50%, rgba(122,202,42,0.3) 90%, rgba(255,255,255,0.3) 100%)" ';}else{echo' style="background: rgb(255,255,255);background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,193,7,0.3) 10%, rgba(255,193,7,0.3) 50%, rgba(255,193,7,0.3) 90%, rgba(255,255,255,0.3) 100%)" ';} echo 'class="tr-shadow">
+                                <tr';if ($d["bord"]=="0"){echo ' style="background: rgb(255,255,255);background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(254,190,1,0.3) 10%, rgba(254,190,1,0.3) 50%, rgba(254,190,1,0.3) 90%, rgba(255,255,255,0.3) 100%)" ';}else{echo' style="background: rgb(255,255,255);background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,0,0,0.3) 10%, rgba(255,0,0,0.3) 50%, rgba(255,0,0,0.3) 90%, rgba(255,255,255,0.3) 100%)" ';} echo 'class="tr-shadow">
                                     <td>
                                         <label class="au-checkbox">
                                             <input type="checkbox">
@@ -193,7 +196,7 @@ foreach ($pat as $p){
                                     <td>'.$d["pu"].'</td>
                                     <td>
                                         <div class="table-data-feature">
-                                            <button class="item" data-toggle="modal" data-target="#edit'.$x.'" data-placement="top" title="Edit">
+                                        <button class="item" data-toggle="modal" data-target="#edit'.$x.'" data-placement="top" title="Edit">
                                                 <i class="zmdi zmdi-edit"></i>
                                             </button>
                                             <div class="modal fade" id="edit'.$x.'" tabindex="1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
@@ -210,14 +213,14 @@ foreach ($pat as $p){
                                                     <div class="row mb-1">
                                                         <div class="form-group col-4 offset-4">
                                                             <div style="text-align: center;"><label for="num_dec'.$x.'" class="control-label mb-1">Numèro Decision</label></div>
-                                                            <input id="num_dec'.$x.'" name="num_dec" type="text" class="form-control text-center" value="'.$d["n_decision"].'" placeholder="XX/XXXX/XXXX" maxlength="15">
+                                                            <input disabled id="num_dec'.$x.'" name="" type="text" class="form-control text-center" value="'.$d["n_decision"].'" placeholder="XX/XXXX/XXXX" maxlength="15">
                                                         </div>
                                                     </div>
                                                     <div class="row mb-1">
                                                         <div class="col-4 ">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="nbs'.$x.'" class="control-label mb-1">Nb seance</label></div>
-                                                                <input id="nbs'.$x.'" name="nbs" type="text" class="form-control text-center" value="'.$d["nbr_s"].'" placeholder="">
+                                                                <input id="nbs'.$x.'" name="nbs" type="number" max="36" class="form-control text-center" value="'.$d["nbr_s"].'" placeholder="">
                                                             </div>
                                                         </div>
                                                         <div class="col-4">
@@ -233,7 +236,7 @@ foreach ($pat as $p){
                                                         <div class="col-4 ">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="date_deb'.$x.'" class="control-label mb-1">date debut</label></div>
-                                                                <input  id="date_deb'.$x.'" name="date_deb" type="date" class="form-control text-center" value="'.$d["dat_deb"].'" placeholder="" onchange="handler(event,'.$x.');">
+                                                                <input  id="date_deb'.$x.'" name="date_deb" type="date" class="form-control text-center" value="'.$d["dat_deb"].'" placeholder="" onchange="handler(event,'.$x.'); validateDate(this);">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -241,7 +244,7 @@ foreach ($pat as $p){
                                                         <div class="col-4 offset-4">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="pu'.$x.'" class="control-label mb-1">Prix Unitaire</label></div>
-                                                                <input  id="pu'.$x.'" name="pu" type="text" class="form-control text-center" value="11.5" placeholder="">
+                                                                <input  id="pu'.$x.'" name="pu" type="text" class="form-control text-center" value="7.2" placeholder="">
 
                                                             </div>
                                                         </div>
@@ -302,9 +305,10 @@ foreach ($pat as $p){
                                                 </div>
                                             </div>
                                             <div class="modal-footer d-flex justify-content-center">
-                                                <input type="hidden" name="num_ass" value="'.$_GET["n_ass"].'">
-                                                <input type="hidden" name="id" value="'.$id.'">
+                                                <input type="hidden" name="num_ass" value="'.$d["n_assure"].'">
+                                                <input type="hidden" name="id" value="'.$_GET["n_ass"].'">
                                                 <input type="hidden" name="form" value="editPEC">
+                                                <input  id="num_dec'.$x.'" name="num_dec" type="hidden" class="form-control text-center" value="'.$d["n_decision"].'" placeholder="XX/XXXX/XXXX" maxlength="15">
                                                 <input type="button" class="btn btn-outline-danger" data-dismiss="modal" aria-label="Close"  value="Cancel">
                                                 <input type="submit" class="btn btn-outline-success" value="Ajouter">
                                             </div>
@@ -312,9 +316,14 @@ foreach ($pat as $p){
                                     </div>
                                 </div>
                             </div>
-                                            <button class="item" data-toggle="modal" data-target="#del'.$x.'" data-placement="top" title="Delete">
+                                            ';
+                                                            if($d["bord"]=="0")
+                                                            {
+                                                                echo '<button class="item" data-toggle="modal" data-target="#del'.$x.'" data-placement="top" title="Delete">
                                                 <i class="zmdi zmdi-delete"></i>
-                                            </button>
+                                            </button>';
+                                                            }
+                                                            echo '
                                             <div class="modal fade" id="del'.$x.'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
                                                   <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
@@ -335,6 +344,7 @@ foreach ($pat as $p){
                                                               <p class="text-center text-danger">Voulez-vous vraiment supprimer cette decision?</p>
                                                             </div>
                                                             <input type="hidden" name="num_ass" value="'.$d["n_assure"].'">
+                                                            <input type="hidden" name="id" value="'.$_GET["n_ass"].'">
                                                             <input type="hidden" name="num_dec" value="'.$d["n_decision"].'">
                                                             <input type="hidden" name="form" value="deletePEC">
                                                         </div>
@@ -347,10 +357,10 @@ foreach ($pat as $p){
                                                   </div>
                                             </div>
                                             <button class="item" data-toggle="tooltip" data-placement="top" title="Imprimer Facture">
-                                                <a target="_blank" href="print.php?n_assure='.$d["n_assure"].'&n_decision='.$d["n_decision"].'"><i class="zmdi zmdi-print"></i></a>
+                                                <a target="_blank" href="print.php?n_assure='.$_GET["n_ass"].'&n_decision='.$d["n_decision"].'"><i class="zmdi zmdi-print"></i></a>
                                             </button>
                                             <button class="item" data-toggle="tooltip" data-placement="top" title="Imprimer Page Seances">
-                                                <a target="_blank" href="prints.php?n_assure='.$d["n_assure"].'&n_decision='.$d["n_decision"].'"><i class="zmdi zmdi-print"></i></a>
+                                                <a target="_blank" href="prints.php?n_assure='.$_GET["n_ass"].'&n_decision='.$d["n_decision"].'"><i class="zmdi zmdi-print"></i></a>
                                             </button>
                                         </div>
                                     </td>
@@ -360,8 +370,6 @@ foreach ($pat as $p){
                                 </tbody>
                             </table>
                         </div>
-
-
                         </div>
                     </div><!-- .col -->
                 </div>

@@ -1,8 +1,19 @@
-<?php include "inc/fonctions.php";
+<?php
+
+    session_start();
+if (isset($_SESSION["cin"])) {
+
+} else {
+    header("location:login.php");
+}
+    include "inc/fonctions.php";
     $use=new fonctions();
     $fac=$use->getFact($_GET['n_decision']);
     $pat=$use->getPatient($_GET['n_assure']);
     $dec=$use->getDec($_GET['n_assure'],$_GET['n_decision']);
+    $u=$use->getKine($_SESSION['cin']);
+    foreach ($u as $t)
+    {
 
 
     foreach ($fac as $f)
@@ -29,7 +40,7 @@
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Cabinet Mouna Derouich - Cnam</title>
+    <title>Cabinet <?php echo $t["nom"].' '.$t["prenom"]?> - Cnam</title>
     <!-- Fontfaces CSS-->
     <link href="../css/font-face.css" rel="stylesheet" media="all">
     <link href="../vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
@@ -60,14 +71,14 @@
 
 <div class="row mt-5 mb-5" >
     <div style="border: 1px solid black;padding: 2%; border-radius: 25px;" class="col-4 offset-1">
-        <h5 class="text-center"> Derouiche Mouna</h5>
-        <h5 class="text-center text-uppercase"> Kinesitherapeute</h5>
+        <h5 class="text-center"> <?php echo $t["nom"].' '.$t["prenom"]?></h5>
+        <h5 class="text-center text-uppercase"> <?php echo $t["profeesion"]?></h5>
         <hr>
-        <h6 class="text-center "> Av. de la republique, Imm. Les Arcades</h6>
+        <h6 class="text-center "> <?php echo $t["adresse"]?></h6>
         <table width="100%" class="text-center">
             <tr>
                 <td width="50%;"><h7>Tel/GSM</h7></td>
-                <td><h7>25 456 832</h7></td>
+                <td><h7><?php echo $t["mobile"]?></h7></td>
             </tr>
 
         </table>
@@ -124,7 +135,7 @@
     </table>
 </div>
 
-<?php }}}}}?>
+<?php }}}}}}?>
 <script src="../vendor/jquery-3.2.1.min.js"></script>
 <!-- Bootstrap JS-->
 <script src="../vendor/bootstrap-4.1/popper.min.js"></script>

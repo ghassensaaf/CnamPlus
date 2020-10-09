@@ -29,9 +29,10 @@ foreach ($u as $t)
     <meta name="description" content="au theme template">
     <meta name="author" content="Hau Nguyen">
     <meta name="keywords" content="au theme template">
+    <link rel="shortcut icon" href="" />
 
     <!-- Title Page-->
-    <title>Cabinet Mouna Derouich - Cnam</title>
+    <title>Cabinet <?php echo $t["nom"].' '.$t["prenom"] ?> - Cnam</title>
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
     <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
@@ -63,7 +64,7 @@ foreach ($u as $t)
 <body class="animsition">
 <div class="page-wrapper">
     <!-- HEADER DESKTOP-->
-    <header class="header-desktop3 d-none bg-light d-lg-block">
+    <header class="header-desktop3 d-none  d-lg-block" style="background: whitesmoke">
         <div class="section__content section__content--p35">
             <div class="header3-wrap">
                 <div class="header__logo">
@@ -71,7 +72,7 @@ foreach ($u as $t)
                         <img width="179px" height="52px" src="images/icon/mouna-logo.png" alt="CoolAdmin" />
                     </a>
                 </div>
-                <div class="header__navbar">
+                <div class="header__navbar" >
                     <ul class="list-unstyled">
                         <li class="has-sub">
                             <a href="index.php">

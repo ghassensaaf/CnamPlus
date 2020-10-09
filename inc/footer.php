@@ -81,7 +81,10 @@
 <script src="js/main.js"></script>
 
 <script>
-    function checkAv(str) {
+    function checkAv() {
+        var str=document.getElementById("num_ass");
+        var str1=document.getElementById("nom");
+        var str2=document.getElementById("pre");
         if(str.value.length< 7) {
             document.getElementById("num_ass_r").innerHTML = "";
             str.classList.add("is-invalid");
@@ -90,7 +93,7 @@
         }
         else {
             var xmlhttp = new XMLHttpRequest();
-            
+
             xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     document.getElementById("num_ass_r").innerHTML = this.responseText;
@@ -106,7 +109,7 @@
                     }
                 }
             };
-            xmlhttp.open("GET","inc/forms.php?form=checkAss&q="+str.value,true);
+            xmlhttp.open("GET","inc/forms.php?form=checkAss&q="+str.value+"&y="+str1.value+"&z="+str2.value,true);
             xmlhttp.send();
 
         }
@@ -144,7 +147,7 @@
 
     }
     function validate(element) {
-        if(element.value.length>3)
+        if(element.value.length>2)
         {
             element.classList.add("is-valid");
             element.classList.remove("is-invalid");
@@ -153,6 +156,34 @@
         {
             element.classList.add("is-invalid");
             element.classList.remove("is-valid");
+        }
+    }
+    function validateDate(element)
+    {
+        s=new Date (element.value).getDay();
+        let w=0;
+        <?php
+        $js_array = json_encode($jourf);
+        echo "var javascript_array = ". $js_array . ";\n";
+        ?>
+        for(let count=0;count<javascript_array.length;count++)
+        {
+            if(javascript_array[count].jour==element.value)
+            {
+                w=1;
+            }
+        }
+        if(s!=0 && w==0)
+        {
+            element.classList.add("is-valid");
+            element.classList.remove("is-invalid");
+            document.getElementById("datespan").innerHTML=""
+        }
+        else
+        {
+            element.classList.add("is-invalid");
+            element.classList.remove("is-valid");
+            document.getElementById("datespan").innerHTML="<i class=\"zmdi zmdi-close-circle\"></i> Dimanche ou Jour férié"
         }
     }
     function submit_form(x)
@@ -177,41 +208,32 @@
             total += parseFloat($(this).attr('data-valuetwo'));
         });
 
-        $("#total").html(total);
+        $("#total").html(total.toFixed(2));
 
     });
 </script>
 <script type="text/javascript">
     $(function() {
-        // for now, there is something adding a click handler to 'a'
-        var tues = moment().day(2).hour(19);
+
 
         // build trival night events for example data
+        <?php
+        $js_array = json_encode($jourf);
+        echo "var javascript_array = ". $js_array . ";\n";
+        ?>
         var events = [
-            {
-                title: "Special Conference",
-                start: moment().format('YYYY-MM-DD'),
-                url: '#'
-            },
-            {
-                title: "Doctor Appt",
-                start: moment().hour(9).add(2, 'days').toISOString(),
-                url: '#'
-            }
+
 
         ];
-
-        var trivia_nights = []
-
-        for(var i = 1; i <= 4; i++) {
-            var n = tues.clone().add(i, 'weeks');
-            console.log("isoString: " + n.toISOString());
-            trivia_nights.push({
-                title: 'Trival Night @ Pub XYZ',
-                start: n.toISOString(),
-                allDay: false,
-                url: '#'
-            });
+        for(let count=0;count<javascript_array.length;count++)
+        {
+            var e={};
+            e["title"]="Jour Férié";
+            e["start"]=moment(javascript_array[count].jour).format('YYYY-MM-DD');
+            e["url"]="#";
+            e["backgroundColor"]="#fd7e14";
+            e["borderColor"]="#fd7e14";
+            events.push(e);
         }
 
         // setup a few events
@@ -221,7 +243,7 @@
                 center: 'title',
                 right: 'month,agendaWeek,agendaDay,listWeek'
             },
-            events: events.concat(trivia_nights)
+            events: events
         });
     });
 </script>
@@ -335,37 +357,61 @@
         {
             j= new Date(h);
             j.setDate(j.getDate() + (4 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay2(j,4)}
+            else
+            {return j}
         }
         else if(x==2)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (5 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay2(j,5)}
+            else
+            {return j}
         }
         else if(x==3)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (6 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay2(j,6)}
+            else
+            {return j}
         }
         else if(x==4)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (1 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay2(j,1)}
+            else
+            {return j}
         }
         else if(x==5)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (2 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay2(j,2)}
+            else
+            {return j}
         }
         else if(x==6)
         {
             j= new Date(h);
             j.setDate(j.getDate() + (3 + 7 - j.getDay()) % 7);
-            return j;
+            console.log(j)
+            if(checkDate(formatDate(j))==true)
+            {return nextDay2(j,3)}
+            else
+            {return j}
         }
     }
     function nextDay1(h,x)
@@ -373,45 +419,19 @@
         if(x==0)
         {
             j= new Date(h);
-            j.setDate(j.getDate() +7);
-            return j;
+            j.setDate(j.getDate() + (1 + 7 - j.getDay()) % 7);
+            if(checkDate(formatDate(j))==true)
+            {return nextDay1(j,x)}
+            else
+            {return j}
         }
-        else if(x==1)
-        {
-            j= new Date(h);
-            j.setDate(j.getDate() + 7);
-            return j;
-        }
-        else if(x==2)
-        {
-            j= new Date(h);
-            j.setDate(j.getDate() + 7);
-            return j;
-        }
-        else if(x==3)
-        {
-            j= new Date(h);
-            j.setDate(j.getDate() + 7);
-            return j;
-        }
-        else if(x==4)
-        {
-            j= new Date(h);
-            j.setDate(j.getDate() +  7);
-            return j;
-        }
-        else if(x==5)
-        {
-            j= new Date(h);
-            j.setDate(j.getDate() + 7);
-            return j;
-        }
-        else if(x==6)
-        {
-            j= new Date(h);
-            j.setDate(j.getDate() + 7);
-            return j;
-        }
+        j= new Date(h);
+        j.setDate(j.getDate() +7);
+        if(checkDate(formatDate(j))==true)
+        {return nextDay1(j,x)}
+        else
+        {return j}
+
     }
     function handler(e,x='')
     {

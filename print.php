@@ -1,10 +1,18 @@
-<?php include "inc/fonctions.php";
+<?php
+    session_start();
+if (isset($_SESSION["cin"])) {
+
+} else {
+    header("location:login.php");
+}
+    include "inc/fonctions.php";
     $use=new fonctions();
     $fac=$use->getFact($_GET['n_decision']);
     $pat=$use->getPatient($_GET['n_assure']);
     $dec=$use->getDec($_GET['n_assure'],$_GET['n_decision']);
-
-
+    $u=$use->getKine($_SESSION['cin']);
+foreach ($u as $t)
+{
     foreach ($fac as $f)
     {
         foreach ($pat as $p)
@@ -29,7 +37,7 @@
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Cabinet Mouna Derouich - Cnam</title>
+    <title>Cabinet <?php echo $t["nom"].' '.$t["prenom"]?> - Cnam</title>
     <!-- Fontfaces CSS-->
     <link href="../css/font-face.css" rel="stylesheet" media="all">
     <link href="../vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
@@ -57,24 +65,23 @@
 
 </head>
 <body style="border: 3px solid black;height: 100vh;border-radius: 25px; font-family: 'Times New Roman';" class="animsition"onload="window.print();setTimeout(window.close, 0);">
-
 <div class="row mt-5 mb-5" >
     <div style="border: 1px solid black;padding: 2%; border-radius: 25px;" class="col-4 offset-1">
-        <h5 class="text-center"> Derouiche Mouna</h5>
-        <h5 class="text-center text-uppercase"> Kinesitherapeute</h5>
-        <h6 class="text-center "> Av. de la republique, Imm. Les Arcades</h6>
+        <h5 class="text-center"> <?php echo $t["nom"].' '.$t["prenom"]?></h5>
+        <h5 class="text-center text-uppercase"> <?php echo $t["profeesion"]?></h5>
+        <h6 class="text-center "> <?php echo $t["adresse"]?></h6>
         <table width="100%" class="text-center">
             <tr>
                 <td width="50%;"><h7>Tel/GSM</h7></td>
-                <td><h7>25 456 832</h7></td>
+                <td><h7><?php echo $t["mobile"]?></h7></td>
             </tr>
             <tr>
                 <td width="50%;"><h7>Mat. Fiscal</h7></td>
-                <td><h7>1597611/S</h7></td>
+                <td><h7><?php echo $t["mat_fisc"]?></h7></td>
             </tr>
             <tr>
-                    <td width="50%;"><h7>RIB</h7></td>
-                    <td><h7>08909010032001730537</h7></td>
+                <td width="50%;"><h7>RIB</h7></td>
+                <td><h7><?php echo $t["RIB"]?></h7></td>
             </tr>
         </table>
     </div>
@@ -87,11 +94,7 @@
             </tr>
             <tr>
                 <td><h6>Code Cnam</h6></td>
-                <td><h6>1/27348/91</h6></td>
-            </tr>
-            <tr>
-                <td><h6>Num° Decision</h6></td>
-                <td><h6><?php echo $_GET["n_decision"]?></h6></td>
+                <td><h6><?php echo $t["code"]?></h6></td>
             </tr>
         </table>
     </div>
@@ -159,12 +162,14 @@
                 <td><strong><?php echo $f["total_ttc"].' TND'?></strong></td>
             </tr>
         </table>
-        <h4 class=" ">La Somme est arrêtée à :<?php if ($d["nbr_s"]%2==0){echo ' '.$f["ttc_lettre"].' Dinars.';}else{echo ' '.$f["ttc_lettre"].'Dinars et Cinq-Cent Millimes. ';}?></h4>
+<!--        <h4 class=" ">La Somme est arrêtée à :--><?php //if ($d["nbr_s"]%2==0){echo ' '.$f["ttc_lettre"].' Dinars.';}else{echo ' '.$f["ttc_lettre"].'Dinars et Cinq-Cent Millimes. ';}?><!--</h4>-->
+        <h4>La somme est arreté a <?php echo $f["ttc_lettre"]?> dinars <?php $c=($f["total_ttc"]-floor($f["total_ttc"])); echo " et ".round($c*1000)." millimes"; ?></h4>
+
         <h3 class="mt-5 text-right"><strong>Signature et caché</strong></h3>
     </div>
 
 </div>
-<?php }}}}}?>
+<?php }}}}}}?>
 <script src="../vendor/jquery-3.2.1.min.js"></script>
 <!-- Bootstrap JS-->
 <script src="../vendor/bootstrap-4.1/popper.min.js"></script>

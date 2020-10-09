@@ -51,14 +51,33 @@ class fonctions
             session_start();
         }
         $cin=$_SESSION["cin"];
-        if($nAss==null)
+        if($nAss==null )
         {
             $sql="select * from cabinet.patient where cin_kine = '$cin'";
         }
         else
         {
-            $sql="select * from cabinet.patient where cin_kine = '$cin' and n_assure= '$nAss'";
+            $sql="select * from cabinet.patient where cin_kine = '$cin' and id= '$nAss'";
         }
+
+        $db = config::getConnexion();
+        try
+        {
+            $u=$db->query($sql);
+            return $u;
+        }
+        catch (Exception $e)
+        {
+            die('Erreur: '.$e->getMessage());
+        }
+    }
+    public function getLastPatient()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        $cin=$_SESSION["cin"];
+        $sql="select * from cabinet.patient where cin_kine = '$cin' ORDER BY id DESC LIMIT 1";
         $db = config::getConnexion();
         try
         {
@@ -76,7 +95,7 @@ class fonctions
             session_start();
         }
         $cin=$_SESSION["cin"];
-        $sql="delete from cabinet.patient where cin_kine = '$cin' and n_assure = '$numA'";
+        $sql="delete from cabinet.patient where cin_kine = '$cin' and id = '$numA'";
         $db = config::getConnexion();
         try
         {
@@ -90,7 +109,7 @@ class fonctions
     }
     public function editPatient($numA,$cinK,$nomA,$preA,$qua,$nom,$pre,$diag,$tel)
     {
-        $sql="update cabinet.patient set nom='$nom',prenom='$pre',diagnostique='$diag',tel='$tel',qualite='$qua',nom_ass='$nomA',pre_ass='$preA' where cin_kine = '$cinK' and n_assure = '$numA'";
+        $sql="update cabinet.patient set nom='$nom',prenom='$pre',diagnostique='$diag',tel='$tel',qualite='$qua',nom_ass='$nomA',pre_ass='$preA' where cin_kine = '$cinK' and id = '$numA'";
         $db = config::getConnexion();
         try
         {
@@ -102,10 +121,10 @@ class fonctions
             die('Erreur: '.$e->getMessage());
         }
     }
-    public function addDec($numA,$numD,$nbs,$ns_p_s,$dateD,$pu,$dateF)
+    public function addDec($numA,$numD,$nbs,$ns_p_s,$dateD,$pu,$dateF,$id)
     {
-        $sql="insert into cabinet.decision (n_assure,n_decision,nbr_s,nb_s_sem,dat_deb,pu,date_fin)
-                                    values ('$numA','$numD','$nbs','$ns_p_s','$dateD','$pu','$dateF')";
+        $sql="insert into cabinet.decision (n_assure,n_decision,nbr_s,nb_s_sem,dat_deb,pu,date_fin,id)
+                                    values ('$numA','$numD','$nbs','$ns_p_s','$dateD','$pu','$dateF','$id')";
         $db = config::getConnexion();
         try
         {
@@ -167,17 +186,17 @@ class fonctions
     }
     public function getDec($numA=null,$numD=null)
     {
-        if(($numD!=null)&&(($numA!=null)))
+        if($numD!=null and $numA!=null)
         {
-            $sql="select * from cabinet.decision where n_assure = '$numA' and n_decision='$numD'";
+            $sql="select * from cabinet.decision where id = '$numA' and n_decision='$numD'";
         }
-        else if($numA!=null)
-        {
-            $sql="select * from cabinet.decision where n_assure = '$numA'";
-        }
-        else if($numD!=null)
+        else if($numD!=null and $numA==null)
         {
             $sql="select * from cabinet.decision where n_decision='$numD'";
+        }
+        else if($numD==null and $numA!=null)
+        {
+            $sql="select * from cabinet.decision where id='$numA'";
         }
         else
         {
@@ -207,9 +226,10 @@ class fonctions
             die('Erreur: '.$e->getMessage());
         }
     }
-    public function editDec($numA,$numD,$nbs,$ns_p_s,$dateD,$pu)
+    public function editDec($numD,$nbs,$ns_p_s,$dateD,$pu)
     {
-        $sql="update cabinet.decision set nbr_s ='$nbs',nb_s_sem='$ns_p_s',dat_deb='$dateD',pu='$pu' where n_assure = '$numA' and n_decision='$numD'";
+        $sql="update cabinet.decision set nbr_s ='$nbs',nb_s_sem='$ns_p_s',dat_deb='$dateD',pu='$pu' where n_decision='$numD'";
+        echo $sql;
         $db = config::getConnexion();
         try
         {
@@ -222,7 +242,8 @@ class fonctions
     }
     public function editFac($id,$date_p,$date_fin,$pu,$tot_ht,$tva,$tot_ttc,$ttc_lettre,$mtva)
     {
-        $sql="update cabinet.facture set date_premier='$date_p',date_fin='$date_fin',pu='$pu',total_ht='$tot_ht',tva='$tva',total_ttc='$tot_ttc',ttc_lettre='$ttc_lettre',mnt_tva='$mtva' where id ='$id'";
+        $sql="update cabinet.facture set date_premier='$date_p',date_fin='$date_fin',pu='$pu',total_ht='$tot_ht',tva='$tva',total_ttc='$tot_ttc',ttc_lettre='$ttc_lettre',mnt_tva='$mtva' where n_decision ='$id'";
+        echo $sql;
         $db = config::getConnexion();
         try
         {
@@ -239,6 +260,7 @@ class fonctions
                                         values ('$numD','$indice','$nom_jour','$date_jour','$date_premier')
                                         ON DUPLICATE KEY UPDATE 
                                         nom_jour = '$nom_jour',date_jour = '$date_jour',date_premier = '$date_premier'";
+
         $db = config::getConnexion();
         try
         {
@@ -249,9 +271,13 @@ class fonctions
             die('Erreur: '.$e->getMessage());
         }
     }
-    public function getFact($id)
+    public function getFact($id=null,$nfac=null)
     {
         $sql= "select * from cabinet.facture where n_decision='$id' order by date_premier DESC";
+        if($nfac!=null)
+        {
+            $sql= "select * from cabinet.facture where n_fac='$nfac' order by date_premier DESC";
+        }
         $db = config::getConnexion();
         try
         {
@@ -279,13 +305,13 @@ class fonctions
             die('Erreur: '.$e->getMessage());
         }
     }
-    public function check_num_ass_avalibility($nAss)
+    public function check_num_ass_avalibility($nAss,$nom,$pre)
     {
-        $sql="select * from cabinet.patient where n_assure ='$nAss'";
+        $sql="select * from cabinet.patient where n_assure ='$nAss' and nom ='$nom' and prenom='$pre'";
         $db = config::getConnexion();
         try
         {
-            return $db->query($sql)->rowCount();
+            return $db->query($sql);
         }
         catch (Exception $e)
         {
@@ -518,16 +544,26 @@ class fonctions
     }
     public function addjrf($dated,$datef)
     {
-        $sql="insert into jour_non_aut   
-              select a.Date 
-                from (
-                    select curdate() - INTERVAL (a.a + (10 * b.a) + (100 * c.a) + (1000 * d.a) ) DAY as Date
-                    from (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as a
-                    cross join (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as b
-                    cross join (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as c
-                    cross join (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as d
-                ) a
-                where a.Date between '$dated' and '$datef'";
+//        $sql="insert into jour_non_aut
+//              select a.Date
+//                from (
+//                    select curdate() - INTERVAL (a.a + (10 * b.a) + (100 * c.a) + (1000 * d.a) ) DAY as Date
+//                    from (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as a
+//                    cross join (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as b
+//                    cross join (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as c
+//                    cross join (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as d
+//                ) a
+//                where a.Date between '$dated' and '$datef'";
+        $sql="INSERT INTO jour_non_aut (jour)
+                select * 
+                from 
+                    (select adddate('1970-01-01',t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) selected_date from
+                     (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+                     (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+                     (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+                     (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+                     (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4) v
+                where selected_date between '$dated' and '$datef'";
         $db = config::getConnexion();
         try
         {
@@ -546,6 +582,19 @@ class fonctions
         {
             $u=$db->query($sql);
             return $u;
+        }
+        catch (Exception $e)
+        {
+            die('Erreur: '.$e->getMessage());
+        }
+    }
+    public function supjrf($dates)
+    {
+        $sql="delete  from jour_non_aut where jour='$dates' ";
+        $db = config::getConnexion();
+        try
+        {
+            $db->query($sql);
         }
         catch (Exception $e)
         {

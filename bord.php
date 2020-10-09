@@ -1,6 +1,6 @@
 <?php include 'inc/header.php';
 $dec=$f->getDec();
-;?>
+?>
 <div class="main-content" >
     <div class=" section__content--p30">
         <div class="container-fluid">
@@ -33,7 +33,7 @@ $dec=$f->getDec();
                                                     }
                                                     foreach ($dec as $d)
                                                     {
-                                                        $ass=$f->getPatient($d["n_assure"]);
+                                                        $ass=$f->getPatient($d["id"]);
                                                         $fac=$f->getFact($d["n_decision"]);
                                                         foreach ($ass as $a)
                                                         {
@@ -100,7 +100,7 @@ $dec=$f->getDec();
                                 foreach ($bord as $b)
                                 {
                                     $nF=$f->nbF($b["n_bord"]);
-
+                                    $ss=0;
                                     foreach ($nF as $zlebya)
                                     {
                                         $ss++;

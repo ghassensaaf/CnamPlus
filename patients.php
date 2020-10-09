@@ -29,7 +29,7 @@ $pat=$f->getPatient();
                                                     <div class="row mb-1">
                                                         <div class="form-group col-6 offset-3">
                                                             <div style="text-align: center;"><label for="num_ass" class="control-label mb-1">Numèro Assuré</label></div>
-                                                            <input id="num_ass" name="num_ass" type="text" class="form-control text-center " value="" placeholder="XXXXXXXX/XX" onkeyup="checkAv(this)" maxlength="15" minlength="6" required>
+                                                            <input id="num_ass" name="num_ass" type="text" class="form-control text-center " value="" placeholder="XXXXXXXX/XX" onkeyup="checkAv()" maxlength="15" minlength="6" required>
                                                             <span id="num_ass_r"></span>
                                                         </div>
                                                     </div>
@@ -37,13 +37,13 @@ $pat=$f->getPatient();
                                                         <div class="col-5 offset-1">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="nom_ass" class="control-label mb-1">Nom Assuré</label></div>
-                                                                <input id="nom_ass" name="nom_ass" type="text" onkeyup="validate(this);document.getElementById('nom').value=this.value;" class="form-control" value="" placeholder="" required>
+                                                                <input id="nom_ass" name="nom_ass" type="text" onkeyup="validate(this);document.getElementById('nom').value=this.value;checkAv();" class="form-control" value="" placeholder="" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-5">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="pre_ass" class="control-label mb-1">Prènom Assuré</label></div>
-                                                                <input id="pre_ass" name="pre_ass" type="text" class="form-control" value="" placeholder="" onkeyup="validate(this);document.getElementById('pre').value=this.value;" required>
+                                                                <input id="pre_ass" name="pre_ass" type="text" class="form-control" value="" placeholder="" onkeyup="validate(this);document.getElementById('pre').value=this.value;checkAv();" required>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -54,7 +54,7 @@ $pat=$f->getPatient();
                                                                 <select id="qualite" name="qualite" class="form-control ">
                                                                     <option value="Assure lui meme">Assuré lui même</option>
                                                                     <option value="Conjoint">Conjoint</option>
-                                                                    <option value="Enfant">Enfant</option>
+                                                                    <option value="Enfant" selected>Enfant</option>
                                                                     <option value="Mere">Mere</option>
                                                                     <option value="Pere">Pere</option>
                                                                 </select>
@@ -70,13 +70,13 @@ $pat=$f->getPatient();
                                                         <div class="col-5 offset-1">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="nom" class="control-label mb-1">Nom</label></div>
-                                                                <input id="nom" name="nom" type="text" class="form-control" value="" placeholder="" onkeyup="validate(this)" required>
+                                                                <input id="nom" name="nom" type="text" class="form-control" value="" placeholder="" onkeyup="validate(this);checkAv();" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-5">
                                                             <div class="form-group">
                                                                 <div style="text-align: center;"><label for="pre_ass" class="control-label mb-1">Prènom</label></div>
-                                                                <input id="pre" name="pre" type="text" class="form-control" value="" placeholder="" onkeyup="validate(this)" required>
+                                                                <input id="pre" name="pre" type="text" class="form-control" value="" placeholder="" onkeyup="validate(this);checkAv();" required>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -97,7 +97,7 @@ $pat=$f->getPatient();
                                             <div class="modal-footer d-flex justify-content-center">
                                                 <input type="hidden" name="cin_kine" value="<?php echo $_SESSION["cin"]?>">
                                                 <input type="hidden" name="form" value="addP">
-                                                <input type="button" class="btn btn-outline-danger" data-dismiss="modal" aria-label="Close"  value="Cancel">
+                                                <input type="button" class="btn btn-outline-danger" data-dismiss="modal" aria-label="Close"  value="Annuler">
                                                 <input type="submit" class="btn btn-outline-success" value="Ajouter">
                                             </div>
                                         </form>
@@ -128,8 +128,9 @@ $pat=$f->getPatient();
                                 <?php
                                 $x=1;
                                 foreach ($pat as $p)
-                                {echo'
-                                <tr style="background: rgb(255,255,255);background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(122,202,42,0.3) 10%, rgba(122,202,42,0.3) 50%, rgba(122,202,42,0.3) 90%, rgba(255,255,255,0.3) 100%);" class="tr-shadow ">
+                                {   $dec=$f->getDec($p["id"],null)->rowCount();
+                                    echo'
+                                <tr style="background: rgb(255,255,255);background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(254,190,1,0.3) 10%, rgba(254,190,1,0.3) 50%, rgba(254,190,1,0.3) 90%, rgba(255,255,255,0.3) 100%);" class="tr-shadow ">
                                     <td>
                                         <label class="au-checkbox">
                                             <input type="checkbox">
@@ -161,7 +162,7 @@ $pat=$f->getPatient();
                                                                             <div class="form-group col-4 offset-4">
                                                                                 <div style="text-align: center;"><label for="num_ass" class="control-label mb-1">Numèro Assuré</label></div>
                                                                                 <input id="" name="" type="text" class="form-control text-center" value="'.$p["n_assure"].'" placeholder="XXXXXXXX/XX" maxlength="11" disabled>
-                                                                                <input id="num_ass" name="num_ass" type="hidden" class="form-control text-center" value="'.$p["n_assure"].'">
+                                                                                <input id="num_ass" name="num_ass" type="hidden" class="form-control text-center" value="'.$p["id"].'">
                                                                             </div>
                                                                         </div>
                                                                         <div class="row mb-1">
@@ -227,16 +228,21 @@ $pat=$f->getPatient();
                                                                 </div>
                                                                 <div class="modal-footer d-flex justify-content-center">
                                                                     <input type="hidden" name="form" value="editP">
-                                                                    <input type="button" class="btn btn-outline-danger" data-dismiss="modal" aria-label="Close" value="Cancel">
+                                                                    <input type="button" class="btn btn-outline-danger" data-dismiss="modal" aria-label="Close" value="Annuler">
                                                                     <input type="submit" class="btn btn-outline-success" value="Modifier">
                                                                 </div>
                                                             </form>
                                     </div>
                                 </div>
                             </div>
-                                            <button class="item" data-toggle="modal" data-target="#del'.$x.'" data-placement="top" title="Delete">
+                                            ';
+                                    if($dec==0)
+                                    {
+                                        echo '<button class="item" data-toggle="modal" data-target="#del'.$x.'" data-placement="top" title="Delete">
                                                 <i class="zmdi zmdi-delete"></i>
-                                            </button>
+                                            </button>';
+                                    }
+                                    echo'
                                             <div class="modal fade" id="del'.$x.'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
                                       <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -246,18 +252,18 @@ $pat=$f->getPatient();
                                           <form action="inc/forms.php" method="post">
                                             <div class="modal-body mx-3">
                                             <div class="md-form mb-5">
-                                              <p class="text-center"> Numero Assuré </p>
-                                              <input type="text" id="orangeForm-name" name="" class="form-control validate text-center" value="'.$p["n_assure"].'" disabled>
+                                              <p class="text-center"> Nom patient </p>
+                                              <input type="text" id="orangeForm-name" name="" class="form-control validate text-center" value="'.$p["nom"].' '.$p["prenom"].'" disabled>
                                             </div>
                                             <div class="md-form mb-5">
                                               <p class="text-center text-danger">Voulez-vous vraiment supprimer ce patient?</p>
                                             </div>
-                                            <input type="hidden" name="num_ass" value="'.$p["n_assure"].'">
+                                            <input type="hidden" name="num_ass" value="'.$p["id"].'">
                                             <input type="hidden" name="form" value="deleteP">
                                           </div>
                                           <div class="modal-footer d-flex justify-content-center">
-                                            <input type="button" class="btn btn-outline-success" data-dismiss="modal" aria-label="Close" value="Cancel">
-                                            <input type="submit" class="btn btn-outline-danger" value="Confirm">
+                                            <input type="button" class="btn btn-outline-success" data-dismiss="modal" aria-label="Close" value="Annuler">
+                                            <input type="submit" class="btn btn-outline-danger" value="Confirmer">
 
                                           </div>
                                           </form>
@@ -265,7 +271,7 @@ $pat=$f->getPatient();
                                       </div>
                                     </div>
                                             <button class="item" data-toggle="tooltip" data-placement="top" title="More">
-                                                <a href="pec.php?n_ass='.$p["n_assure"].'"><i class="zmdi zmdi-more"></i></a>
+                                                <a href="pec.php?n_ass='.$p["id"].'"><i class="zmdi zmdi-more"></i></a>
                                             </button>
                                         </div>
                                     </td>
